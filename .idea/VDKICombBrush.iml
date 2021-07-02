@@ -6,5 +6,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="VDKI" />
     <orderEntry type="module" module-name="TestKamBruest" />
+    <orderEntry type="module" module-name="LearningPython" />
   </component>
 </module>

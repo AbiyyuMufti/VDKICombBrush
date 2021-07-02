@@ -1,8 +1,9 @@
 # import the necessary packages
 import cv2
+import numpy as np
 
 
-class SimplePreprocessor:
+class ImageResizer:
 	def __init__(self, width, height, inter=cv2.INTER_AREA):
 		# store the target image width, height, and interpolation
 		# method used when resizing
@@ -16,6 +17,14 @@ class SimplePreprocessor:
 		return cv2.resize(image, (self.width, self.height), interpolation=self.inter)
 
 
+class GoodFeatureToTrackLoader:
+	def __init__(self):
+		pass
 
-if __name__ == '__main__':
-    pass
+	def get_features(self, image):
+		# Convert to gray scale image
+		pass
+
+	def preprocess(self):
+		pass
+
