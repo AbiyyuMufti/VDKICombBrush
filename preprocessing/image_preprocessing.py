@@ -117,7 +117,7 @@ class FeatureExtraction:
 		for val in self.list_of_features:
 			val["labels"] = labels[self.list_of_features.index(val)]
 		keys = self.list_of_features[0].keys()
-		with open(self.csv_data, fmt) as out:
+		with open(self.csv_data, fmt, newline='', encoding='utf-8') as out:
 			dict_writer = csv.DictWriter(out, keys)
 			dict_writer.writeheader()
 			for dat in self.list_of_features:
