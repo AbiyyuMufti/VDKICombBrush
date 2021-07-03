@@ -2,6 +2,7 @@
 import csv
 import cv2
 import numpy as np
+from sklearn.preprocessing import LabelEncoder
 
 
 class ImageResizer:
@@ -110,9 +111,15 @@ class FeatureExtraction:
 
 		return image
 
-	def extract_to_table(self, fmt="a"):
-		keys = self.csv_data[0].keys()
-		with open(self.csv_data, fmt) as output:
-			dict_writer = csv.DictWriter(output, keys)
+	def extract_to_table(self, labels, fmt="a"):
+		le = LabelEncoder()
+		labels = le.fit_transform(labels)
+		for val in self.list_of_features:
+			val["labels"] = labels[self.list_of_features.index(val)]
+		keys = self.list_of_features[0].keys()
+		with open(self.csv_data, fmt) as out:
+			dict_writer = csv.DictWriter(out, keys)
 			dict_writer.writeheader()
-			dict_writer.writerows(self.csv_data)
+			for dat in self.list_of_features:
+				dict_writer.writerow(dat)
+			# dict_writer.writerows(self.csv_data)
