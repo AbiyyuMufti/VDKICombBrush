@@ -16,7 +16,7 @@ class SimpleDatasetLoader:
 
 	def load(self, image_paths, verbose=-1):
 		# initialize the list of features and labels
-		data = []
+		data_image = []
 		labels = []
 
 		# loop over the input images
@@ -36,13 +36,12 @@ class SimpleDatasetLoader:
 
 			# treat our processed image as a "feature vector"
 			# by updating the data list followed by the labels
-			data.append(image)
+			data_image.append(image)
 			labels.append(label)
 
 			# show an update every `verbose` images
 			if verbose > 0 and i > 0 and (i + 1) % verbose == 0:
-				print("[INFO] processed {}/{}".format(i + 1,
-													  len(image_paths)))
+				print("[INFO] processed {}/{}".format(i + 1, len(image_paths)))
 
 		# return a tuple of the data and labels
-		return (np.array(data), np.array(labels))
+		return (np.array(data_image), np.array(labels))
