@@ -4,6 +4,7 @@ import utility
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 
 
+
 class AiProcess(abc.ABC):
     def __init__(self):
         self.train_data = []
@@ -11,7 +12,7 @@ class AiProcess(abc.ABC):
         self.trainX = []
         self.trainY = []
         self.testX = []
-        self.test_label = []
+        self.test_labels = []
         self.prediction = []
         pass
 
@@ -23,7 +24,7 @@ class AiProcess(abc.ABC):
         ...
 
     def review(self):
-        accuracy = accuracy_score(self.testY, self.prediction)
-        report = classification_report(self.testY, self.prediction, target_names=["brush", "comb"])
-        conf_matrix = confusion_matrix(self.testY, self.prediction)
+        accuracy = accuracy_score(self.test_labels, self.prediction)
+        report = classification_report(self.test_labels, self.prediction, target_names=["brush", "comb"])
+        conf_matrix = confusion_matrix(self.test_labels, self.prediction)
         return accuracy, report, conf_matrix

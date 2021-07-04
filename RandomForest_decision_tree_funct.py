@@ -148,23 +148,15 @@ def decision_tree_algorithm(df, counter=0, min_samples = 2, max_depth = 10, rand
         return sub_tree
 
 # 9. PREDICTION FOR ONE EXAMPLE
-def predict_example(example, tree):
+def classify_example(example, tree):  # CLASSIFICATION
     question = list(tree.keys())[0]
-    feature_name, comparison_operator, value = question.split(" ")
+    feature_name, comparison_operator, value = question.split()
 
     # ask question
-    if comparison_operator == "<=":
-        if example[feature_name] <= float(value):
-            answer = tree[question][0]
-        else:
-            answer = tree[question][1]
-
-    # feature is categorical
+    if example[feature_name] <= float(value):
+        answer = tree[question][0]
     else:
-        if str(example[feature_name]) == value:
-            answer = tree[question][0]
-        else:
-            answer = tree[question][1]
+        answer = tree[question][1]
 
     # base case
     if not isinstance(answer, dict):
@@ -173,9 +165,9 @@ def predict_example(example, tree):
     # recursive part
     else:
         residual_tree = answer
-        return predict_example(example, residual_tree)
+        return classify_example(example, residual_tree)
 
 # 10. PREDICTION FOR ALL EXAMPLES
 def decision_tree_predictions(test_df, tree):
-    predictions = test_df.apply(predict_example, args=(tree,), axis=1)
+    predictions = test_df.apply(classify_example(), args=(tree,), axis=1)
     return predictions
