@@ -71,7 +71,10 @@ class OurCNN(AiProcess):
         plt.show()
 
     def review(self):
-        pass
+        accuracy = accuracy_score(self.test_labels.argmax(axis=1), self.prediction.argmax(axis=1))
+        report = classification_report(self.test_labels.argmax(axis=1), self.prediction.argmax(axis=1), target_names=["brush", "comb"])
+        conf_matrix = confusion_matrix(self.test_labels.argmax(axis=1), self.prediction.argmax(axis=1))
+        return accuracy, report, conf_matrix
 
     def predict(self, test=None):
         if test is not None:
