@@ -4,8 +4,7 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="Python 3.8 (base)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="VDKI" />
-    <orderEntry type="module" module-name="TestKamBruest" />
-    <orderEntry type="module" module-name="LearningPython" />
+    <orderEntry type="module" module-name="XDKLoggerDB" />
+    <orderEntry type="module" module-name="NotUsedVDKI" />
   </component>
 </module>
