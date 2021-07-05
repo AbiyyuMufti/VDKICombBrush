@@ -5,6 +5,7 @@ import csv
 import cv2
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 class ImageResizer:
@@ -15,19 +16,19 @@ class ImageResizer:
 		self.height = height
 		self.inter = inter
 
-	def preprocess(self, image):
+	def preprocess(self, image, **kwargs):
 		# resize the image to a fixed size, ignoring the aspect
 		# ratio
 		return cv2.resize(image, (self.width, self.height), interpolation=self.inter)
 
 
 class FeatureExtraction:
-	def __init__(self, csv_files):
-		self.csv_data = csv_files
+	def __init__(self):
+		self.csv_data = None
 		self.list_of_features = []
 		self.data_frame = None
 
-	def preprocess(self, image):
+	def preprocess(self, image, show=False):
 		img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 		mean_of_gray_image = np.mean(img_gray)
 
@@ -38,12 +39,12 @@ class FeatureExtraction:
 		else:
 			# print("bright image")
 			# Image is bright
-			contour_recognition_threshold = 220
+			contour_recognition_threshold = 200
 		img_thresh = thresholding_image(img_gray, contour_recognition_threshold)
-
-		a = CornersDetection(img_gray)
-		b = CornerHarrisDetection(img_gray)
-		c = ContoursDetection(img_thresh)
+		image_to_show = image.copy() if show else None
+		a = CornersDetection(img_gray, image_to_show)
+		b = CornerHarrisDetection(img_gray, image_to_show)
+		c = ContoursDetection(img_thresh, image_to_show)
 		features_extraction = [a, b, c]
 		for F in features_extraction:
 			F.preprocess()
@@ -70,15 +71,17 @@ class FeatureExtraction:
 			'extent': c.approximation_area / c.rect_area,
 			'solidity': c.approximation_area / c.hull_area
 		}
+		if show:
+			plt.imshow(image_to_show)
 		self.list_of_features.append(features_extracted)
 
-	def extract_to_table(self, labels, fmt="a"):
+	def extract_to_table(self, files, labels, fmt="a"):
 		le = LabelEncoder()
 		labels = le.fit_transform(labels)
 		for val in self.list_of_features:
 			val["labels"] = labels[self.list_of_features.index(val)]
 		keys = self.list_of_features[0].keys()
-		with open(self.csv_data, fmt, newline='', encoding='utf-8') as out:
+		with open(files, fmt, newline='', encoding='utf-8') as out:
 			dict_writer = csv.DictWriter(out, keys)
 			dict_writer.writeheader()
 			for dat in self.list_of_features:

@@ -1,6 +1,8 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import os
+import random
 
 
 class SimpleDatasetLoader:
@@ -11,11 +13,12 @@ class SimpleDatasetLoader:
 		if self.preprocessors is None:
 			self.preprocessors = []
 
-	def load(self, image_paths, verbose=-1):
+	def load(self, image_paths, verbose=-1, show=-1):
 		# initialize the list of features and labels
 		data_image = []
 		labels = []
-
+		from preprocessing import FeatureExtraction
+		cnt = 1
 		# loop over the input images
 		for (i, imagePath) in enumerate(image_paths):
 			image = cv2.imread(imagePath)
@@ -24,8 +27,17 @@ class SimpleDatasetLoader:
 			# check to see if our preprocessors are not None
 			if self.preprocessors is not None:
 				# loop over the preprocessors and apply each to the image
+				x = random.randint(i-5, i+5)
+
 				for p in self.preprocessors:
-					image = p.preprocess(image)
+					if isinstance(p, FeatureExtraction) and show > 0 and x == i and cnt < show:
+						row = (show // 5) + 1 if (show % 5) != 0 else (show // 5)
+						plt.axis('off')
+						plt.subplot(row, 5, cnt)
+						image = p.preprocess(image, show=True)
+						cnt += 1
+					else:
+						image = p.preprocess(image)
 			# treat our processed image as a "feature vector"
 			# by updating the data list followed by the labels
 			data_image.append(image)
