@@ -65,17 +65,21 @@ class ContoursDetection(ExtractFeatures):
     def __init__(self, thresholded_image, show_image=None):
         ExtractFeatures.__init__(self, thresholded_image, show_image)
         self.biggest_contour = None
-        self.contours_length = None
+        self.contours_numbers = None
         self.main_features = dict()
         self.rect_area = 0
         self.hull_area = 0
         self.contour_perimeters = 0
         self.approximation_area = 0
+        self.wide = 0
+        self.length = 0
 
     def contour_features(self):
         # make rectangle that boxing the biggest contour
         rect = cv2.minAreaRect(self.biggest_contour)
-        self.rect_area = rect[1][0] * rect[1][1]
+        self.wide = rect[1][0]
+        self.length = rect[1][1]
+        self.rect_area = self.wide * self.length
         # make hull that surround the biggest contour
         hull = cv2.convexHull(self.biggest_contour)
         self.hull_area = cv2.contourArea(hull)
@@ -113,7 +117,7 @@ class ContoursDetection(ExtractFeatures):
         areas = [cv2.contourArea(ar) for ar in contours]
         cnt = [x for x in areas if x != im_boundary]
         # get the biggest contour
-        self.contours_length = len(contours)
+        self.contours_numbers = len(contours)
         self.biggest_contour = contours[areas.index(max(cnt))]
         return self.biggest_contour
 
@@ -127,18 +131,3 @@ def thresholding_image(img_gray, threshold):
     kernel = np.ones((3, 3), np.uint8)
     img_thresh = cv2.morphologyEx(img_thresh, cv2.MORPH_OPEN, kernel, iterations=2)
     return img_thresh
-
-
-if __name__ == '__main__':
-    import time
-    start = time.process_time()
-    my_image = cv2.imread(r"D:/VDKICombBrush/resources/Brush/image_1.png")
-    img_copy = my_image.copy()
-    img_gray = cv2.cvtColor(my_image, cv2.COLOR_BGR2GRAY)
-    img_thresh = thresholding_image(img_gray, 120)
-    CH = CornerHarrisDetection(img_gray, my_image.copy())
-    CH.get_harris_corners()
-    end = time.process_time()
-    print(end-start)
-    cv2.imshow("plt", CH.image)
-    cv2.waitKey()

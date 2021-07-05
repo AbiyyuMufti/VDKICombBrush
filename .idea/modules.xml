@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../NotUsedVDKI/.idea/NotUsedVDKI.iml" filepath="$PROJECT_DIR$/../NotUsedVDKI/.idea/NotUsedVDKI.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/VDKICombBrush.iml" filepath="$PROJECT_DIR$/.idea/VDKICombBrush.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../XDK/XDKLoggerDB/.idea/XDKLoggerDB.iml" filepath="$PROJECT_DIR$/../XDK/XDKLoggerDB/.idea/XDKLoggerDB.iml" />
     </modules>
   </component>
 </project>
