@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
 import random
-import pprint
-from utility import check_purity, classify_data, split_data, determine_best_split
+from utility import check_purity, classify_data, split_data, determine_best_split, classify_example
 from ai_process import AiProcess
 
 
@@ -46,18 +45,16 @@ def decision_tree_algorithm(df, counter=0, min_samples=2, max_depth=5, random_su
     :return:
     """
     # data preparations
-    if counter == 0:
-        global COLUMN_HEADERS, FEATURE_TYPES
+    if counter == 0:  # at first, data still data frame and it needs to be converted to the numpy 2Darray (without header)
+        global COLUMN_HEADERS
         COLUMN_HEADERS = df.columns
-        FEATURE_TYPES = determine_type_of_feature(df)
         data = df.values
     else:
         data = df
 
-        # base cases
-    if (check_purity(data)) or (len(data) < min_samples) or (counter == max_depth):
+    # base cases (stop condition so recursive not go infinitiv)
+    if (check_purity(data)) or (counter == max_depth):
         classification = classify_data(data)
-
         return classification
 
     # recursive part
@@ -74,26 +71,15 @@ def decision_tree_algorithm(df, counter=0, min_samples=2, max_depth=5, random_su
             classification = classify_data(data)
             return classification
 
-        # determine question
+        # instantiate sub-tree and determine the question
         feature_name = COLUMN_HEADERS[split_column]
-        type_of_feature = FEATURE_TYPES[split_column]
-        if type_of_feature == "continuous":
-            question = "{} <= {}".format(feature_name, split_value)
-
-        # feature is categorical
-        else:
-            question = "{} = {}".format(feature_name, split_value)
-
-        # instantiate sub-tree
+        question = "{} <= {}".format(feature_name, split_value)
         sub_tree = {question: []}
 
         # find answers (recursion)
-        yes_answer = decision_tree_algorithm(data_below, counter, min_samples, max_depth, random_subspace)
-        no_answer = decision_tree_algorithm(data_above, counter, min_samples, max_depth, random_subspace)
+        yes_answer = decision_tree_algorithm(data_below, counter, max_depth, random_subspace)
+        no_answer = decision_tree_algorithm(data_above, counter, max_depth, random_subspace)
 
-        # If the answers are the same, then there is no point in asking the qestion.
-        # This could happen when the data is classified even though it is not pure
-        # yet (min_samples or max_depth base case).
         if yes_answer == no_answer:
             sub_tree = yes_answer
         else:
@@ -101,60 +87,6 @@ def decision_tree_algorithm(df, counter=0, min_samples=2, max_depth=5, random_su
             sub_tree[question].append(no_answer)
 
         return sub_tree
-
-
-def predict_example(example, tree):
-    """
-    :param example:
-    :param tree:
-    :return:
-    """
-    question = list(tree.keys())[0]
-    feature_name, comparison_operator, value = question.split(" ")
-
-    # ask question
-    if comparison_operator == "<=":
-        if example[feature_name] <= float(value):
-            answer = tree[question][0]
-        else:
-            answer = tree[question][1]
-
-    # feature is categorical
-    else:
-        if str(example[feature_name]) == value:
-            answer = tree[question][0]
-        else:
-            answer = tree[question][1]
-
-    # base case
-    if not isinstance(answer, dict):
-        return answer
-
-    # recursive part
-    else:
-        residual_tree = answer
-        return predict_example(example, residual_tree)
-
-
-def determine_type_of_feature(dataframe):
-    """
-    determine the type of feature
-    :param dataframe:
-    :return:
-    """
-    feature_types = []
-    n_unique_values_threshold = 15
-    for feature in dataframe.columns:
-        if feature != "label":
-            unique_values = dataframe[feature].unique()
-            example_value = unique_values[0]
-
-            if (isinstance(example_value, str)) or (len(unique_values) <= n_unique_values_threshold):
-                feature_types.append("categorical")
-            else:
-                feature_types.append("continuous")
-
-    return feature_types
 
 
 def bootstrapping(train_df, n_bootstrap):
@@ -194,7 +126,7 @@ def decision_tree_predictions(test_df, tree):
     :param tree: the trained tree
     :return:
     """
-    predictions = test_df.apply(predict_example, args=(tree,), axis=1)
+    predictions = test_df.apply(classify_example, args=(tree,), axis=1)
     return predictions
 
 

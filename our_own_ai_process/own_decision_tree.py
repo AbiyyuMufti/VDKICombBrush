@@ -1,5 +1,5 @@
 from ai_process import AiProcess
-from utility import check_purity, classify_data, split_data, determine_best_split
+from utility import check_purity, classify_data, split_data, determine_best_split, classify_example
 import pprint
 import pandas as pd
 import numpy as np
@@ -73,32 +73,6 @@ def decision_tree_algorithm(df, counter=0, max_depth=10):
             sub_tree[question].append(no_answer)
 
         return sub_tree
-
-
-def classify_example(example, tree):
-    """
-    predict the test subject category
-    :param example: test subject
-    :param tree: the trained tree
-    :return:
-    """
-    question = list(tree.keys())[0]
-    feature_name, comparison_operator, value = question.split()
-
-    # ask question
-    if example[feature_name] <= float(value):
-        answer = tree[question][0]
-    else:
-        answer = tree[question][1]
-
-    # base case
-    if not isinstance(answer, dict):
-        return answer
-
-    # recursive part
-    else:
-        residual_tree = answer
-        return classify_example(example, residual_tree)
 
 
 class OurDecisionTree(AiProcess):

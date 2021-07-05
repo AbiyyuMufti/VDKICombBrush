@@ -92,3 +92,27 @@ def determine_best_split(data, potential_splits):  # DETERMINE BEST SPLIT OR NOD
     return best_split_column, best_split_value
 
 
+def classify_example(example, tree):
+    """
+    predict the test subject category
+    :param example: test subject
+    :param tree: the trained tree
+    :return:
+    """
+    question = list(tree.keys())[0]
+    feature_name, comparison_operator, value = question.split()
+
+    # ask question
+    if example[feature_name] <= float(value):
+        answer = tree[question][0]
+    else:
+        answer = tree[question][1]
+
+    # base case
+    if not isinstance(answer, dict):
+        return answer
+
+    # recursive part
+    else:
+        residual_tree = answer
+        return classify_example(example, residual_tree)
