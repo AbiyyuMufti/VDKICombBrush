@@ -1,6 +1,7 @@
 
-.idea/misc.xml
+.idea
 *.iml
 *.pyc
-.idea/misc.xml
+.idea
 .idea/VDKICombBrush.iml
+.ipynb_checkpoints
