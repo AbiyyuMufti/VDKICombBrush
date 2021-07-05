@@ -6,8 +6,13 @@ from utility import check_purity, classify_data, split_data, determine_best_spli
 from ai_process import AiProcess
 
 
-def get_potential_splits(data, random_subspace):  # POTENTIAL SPLIT FOR NODE
-
+def get_potential_splits(data, random_subspace):
+    """
+    # POTENTIAL SPLIT FOR NODE Inside the forest
+    :param data:
+    :param random_subspace:
+    :return:
+    """
     potential_splits = {}
     _, n_columns = data.shape
     column_indices = list(range(n_columns - 1))  # excluding the last column which is the label
@@ -32,6 +37,14 @@ def get_potential_splits(data, random_subspace):  # POTENTIAL SPLIT FOR NODE
 
 
 def decision_tree_algorithm(df, counter=0, min_samples=2, max_depth=5, random_subspace=None):
+    """
+    :param df:
+    :param counter:
+    :param min_samples:
+    :param max_depth:
+    :param random_subspace:
+    :return:
+    """
     # data preparations
     if counter == 0:
         global COLUMN_HEADERS, FEATURE_TYPES
@@ -46,7 +59,6 @@ def decision_tree_algorithm(df, counter=0, min_samples=2, max_depth=5, random_su
         classification = classify_data(data)
 
         return classification
-
 
     # recursive part
     else:
@@ -92,6 +104,11 @@ def decision_tree_algorithm(df, counter=0, min_samples=2, max_depth=5, random_su
 
 
 def predict_example(example, tree):
+    """
+    :param example:
+    :param tree:
+    :return:
+    """
     question = list(tree.keys())[0]
     feature_name, comparison_operator, value = question.split(" ")
 
@@ -119,15 +136,20 @@ def predict_example(example, tree):
         return predict_example(example, residual_tree)
 
 
-def determine_type_of_feature(df):
+def determine_type_of_feature(dataframe):
+    """
+    determine the type of feature
+    :param dataframe:
+    :return:
+    """
     feature_types = []
-    n_unique_values_treshold = 15
-    for feature in df.columns:
+    n_unique_values_threshold = 15
+    for feature in dataframe.columns:
         if feature != "label":
-            unique_values = df[feature].unique()
+            unique_values = dataframe[feature].unique()
             example_value = unique_values[0]
 
-            if (isinstance(example_value, str)) or (len(unique_values) <= n_unique_values_treshold):
+            if (isinstance(example_value, str)) or (len(unique_values) <= n_unique_values_threshold):
                 feature_types.append("categorical")
             else:
                 feature_types.append("continuous")
@@ -135,15 +157,27 @@ def determine_type_of_feature(df):
     return feature_types
 
 
-
 def bootstrapping(train_df, n_bootstrap):
-    bootstrap_indices = np.random.randint(low = 0,  high = len(train_df), size = n_bootstrap)
+    """
+    :param train_df:
+    :param n_bootstrap:
+    :return:
+    """
+    bootstrap_indices = np.random.randint(low=0, high=len(train_df), size=n_bootstrap)
     df_bootstrapped = train_df.iloc[bootstrap_indices]
-
     return df_bootstrapped
 
 
 def random_forest_algorithm(train_df, n_trees, n_bootstrap, n_features, dt_max_depth):
+    """
+    the main algorithm for random forest to generate forest object
+    :param train_df:
+    :param n_trees:
+    :param n_bootstrap:
+    :param n_features:
+    :param dt_max_depth:
+    :return:
+    """
     forest = []
     for i in range(n_trees):
         df_bootstrapped = bootstrapping(train_df, n_bootstrap)
@@ -152,12 +186,25 @@ def random_forest_algorithm(train_df, n_trees, n_bootstrap, n_features, dt_max_d
 
     return forest
 
+
 def decision_tree_predictions(test_df, tree):
+    """
+    execute prediction based on decision tree method inside the random forest
+    :param test_df: test subject
+    :param tree: the trained tree
+    :return:
+    """
     predictions = test_df.apply(predict_example, args=(tree,), axis=1)
     return predictions
 
 
 def random_forest_predictions(test_df, forest):
+    """
+    predict the test subject category based on the random forest methode
+    :param test_df: test subject
+    :param forest: the trained forest
+    :return:
+    """
     df_predictions = {}
     for i in range(len(forest)):
         column_name = "tree_{}".format(i)
@@ -165,17 +212,8 @@ def random_forest_predictions(test_df, forest):
         df_predictions[column_name] = predictions
 
     df_predictions = pd.DataFrame(df_predictions)
-    random_forest_predictions = df_predictions.mode(axis=1)[0]
-
-    return random_forest_predictions
-'''
-def calculate_accuracy(predictions, labels):
-    predictions_correct = predictions == labels
-    accuracy = predictions_correct.mean()
-
-    return accuracy
-'''
-
+    random_forest_prediction = df_predictions.mode(axis=1)[0]
+    return random_forest_prediction
 
 
 class OurRandomForrest(AiProcess):
@@ -183,17 +221,23 @@ class OurRandomForrest(AiProcess):
         super().__init__()
         self.forest = None
 
-    def predict(self, test=None):
+    def train(self, **kwargs):
         self.forest = random_forest_algorithm(self.train_data, n_trees=4, n_bootstrap=800, n_features=2, dt_max_depth=4)
-        # self.prediction = self.test_data.apply(predict_example, args=(self.forest,), axis=1)
-        predictions = random_forest_predictions(self.test_data, self.forest)
-        self.prediction = predictions.tolist()
-        self.test_labels = self.test_data.labels
+
+    def predict(self, test=None, **kwargs):
+        try:
+            predictions = random_forest_predictions(self.test_data, self.forest)
+            self.prediction = predictions.tolist()
+            self.test_labels = self.test_data.labels
+            return self.prediction
+        except AttributeError as e:
+            print("Please train your forest first!", e)
 
 
 if __name__ == '__main__':
-    df = pd.read_csv(r"D:\2021\01_HSKA\SS2021\VdKI\Project\03_git\VDKICombBrush\800ImagesFeatures.csv")
+    df = pd.read_csv(r"D:\VDKICombBrush\800ImagesFeatures.csv")
     ORF = OurRandomForrest()
     ORF.fit(df, 0.1)
+    ORF.train()
     ORF.predict()
     print(*ORF.review())

@@ -5,8 +5,12 @@ import pandas as pd
 import numpy as np
 
 
-def get_potential_splits(data):  # POTENTIAL SPLIT FOR NODE
-
+def get_potential_splits(data):
+    """
+    Get potential split for node
+    :param data:
+    :return: potential split
+    """
     potential_splits = {}
     _, n_columns = data.shape
     for column_index in range(n_columns - 1):  # excluding the last column which is the label
@@ -19,13 +23,18 @@ def get_potential_splits(data):  # POTENTIAL SPLIT FOR NODE
                 current_value = unique_values[index]
                 previous_value = unique_values[index - 1]
                 potential_split = (current_value + previous_value) / 2
-
                 potential_splits[column_index].append(potential_split)
-
     return potential_splits
 
 
-def decision_tree_algorithm(df, counter=0, max_depth=10):  # DECISION TREE
+def decision_tree_algorithm(df, counter=0, max_depth=10):
+    """
+    the main algorithm for decision tree
+    :param df: panda data frame
+    :param counter: counter for recursive tracking
+    :param max_depth: maximum possible depth of splits
+    :return: tree object
+    """
     # data preparations
     if counter == 0:  # at first, data still data frame and it needs to be converted to the numpy 2Darray (without header)
         global COLUMN_HEADERS
@@ -34,11 +43,10 @@ def decision_tree_algorithm(df, counter=0, max_depth=10):  # DECISION TREE
     else:
         data = df
 
-    # base cases (stop condition so recursive not go infinitiv)
+    # base cases (stop condition so recursive not go infinitive)
     if (check_purity(data)) or (counter == max_depth):
         classification = classify_data(data)
         return classification
-
 
     # recursive part
     else:
@@ -66,7 +74,14 @@ def decision_tree_algorithm(df, counter=0, max_depth=10):  # DECISION TREE
 
         return sub_tree
 
+
 def classify_example(example, tree):
+    """
+    predict the test subject category
+    :param example: test subject
+    :param tree: the trained tree
+    :return:
+    """
     question = list(tree.keys())[0]
     feature_name, comparison_operator, value = question.split()
 
@@ -86,40 +101,33 @@ def classify_example(example, tree):
         return classify_example(example, residual_tree)
 
 
-
-'''
-def calculate_accuracy(df, tree):  # ACCURACY
-    df["classification"] = df.apply(classify_example, axis=1, args=(tree,))
-    df["classification_correct"] = df.classification == df.labels
-
-    accuracy = df["classification_correct"].mean()
-
-    return accuracy
-'''
-
-
 class OurDecisionTree(AiProcess):
     def __init__(self):
         super().__init__()
         self.tree = None
 
-    def predict(self, test=None):
-        # self.train_data
-        # self.test_data
+    def train(self, **kwargs):
         self.tree = decision_tree_algorithm(self.train_data)
-        self.prediction = self.test_data.apply(classify_example, axis=1, args=(self.tree,)).tolist()
-        self.test_labels = self.test_data.labels
+
+    def predict(self, test=None, **kwargs):
+        if test is not None:
+            self.test_data = test
+        try:
+            self.prediction = self.test_data.apply(classify_example, axis=1, args=(self.tree,)).tolist()
+            self.test_labels = self.test_data.labels
+            return self.prediction
+        except AttributeError as e:
+            print("Please train your tree first!", e)
 
     def plot_tree(self):
         pprint.pprint(self.tree)
 
 
 if __name__ == '__main__':
-    df = pd.read_csv(r"D:\2021\01_HSKA\SS2021\VdKI\Project\03_git\VDKICombBrush\800ImagesFeatures.csv")
+    df = pd.read_csv(r"D:\VDKICombBrush\800ImagesFeatures.csv")
     ODT = OurDecisionTree()
     ODT.fit(df, 0.1)
+    ODT.train()
     ODT.predict()
     ODT.plot_tree()
-    a, b, c = ODT.review()
-    print("HASIL  :", a, b, c)
-    print(ODT.test_data.head())
+    print(*ODT.review())
