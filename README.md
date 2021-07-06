@@ -19,7 +19,7 @@
       - own_random_forest.py: Funktionen für *Random-Forest* -Algorithmus
       - utility.py: gemeinsame von einigen Verfahren verwendete Funktionen, z.B. Funktion fürs Teilen der Data zum Trainieren und Testen
 - #### DataSetCreator.ipynb: [Jupyter-Notebook-Datei]: Aufladen von allen Bilder, Extrahieren der Merkmale und Exportieren zu CSV oder *panda-dataframe*
-- #### ImplementationAI.ipynb: [Jupyter-Notebook-Datei]: Ausüfhrung unserer 4 Verfahren bzw. Anzeigen der *Accuracy*, *Precision* und auch *Recall* und *Support*. Bei CNN wird zusätzlich die "Training Loss" und "Accuracy" in Form einer Grafik angezeigt         
+- #### ImplementationAI.ipynb: [Jupyter-Notebook-Datei]: Ausführung unserer 4 Verfahren bzw. Anzeigen der *Accuracy*, *Precision* und auch *Recall* und *Support*. Bei CNN wird zusätzlich die "Training Loss" und "Accuracy" in Form einer Grafik angezeigt         
 - #### feature_extraction.ipynb: [Jupyter-Notebook-Datei]: Aufladen von einem Bild und seine Merkmale lassen sich durch die package extrahieren
 
 ## Ausführung der Verfahren:
