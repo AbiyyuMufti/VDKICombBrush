@@ -42,10 +42,10 @@ class AiProcess(abc.ABC):
         :return: report and confusion matrix
         """
         try:
-            # accuracy = accuracy_score(self.test_labels, self.prediction)
+            accuracy = accuracy_score(self.test_labels, self.prediction)
             report = classification_report(self.test_labels, self.prediction, target_names=["brush", "comb"])
             conf_matrix = confusion_matrix(self.test_labels, self.prediction)
-            return report, conf_matrix
+            return accuracy, report, conf_matrix
         except ValueError as e:
             print("Please do training or predicting first!", e)
 

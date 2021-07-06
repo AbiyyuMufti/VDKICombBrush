@@ -108,12 +108,13 @@ def decision_tree_algorithm(df, counter=0, max_depth=10, min_samples=2):
 
 
 class OurDecisionTree(AiProcess):
-    def __init__(self):
+    def __init__(self, depth=10):
         super().__init__()
         self.tree = None
+        self.depth = depth
 
     def train(self, **kwargs):
-        self.tree = decision_tree_algorithm(self.train_data)
+        self.tree = decision_tree_algorithm(self.train_data, max_depth=self.depth)
 
     def predict(self, test=None, **kwargs):
         if test is not None:

@@ -208,13 +208,20 @@ def random_forest_predictions(test_df, forest):
 
 
 class OurRandomForrest(AiProcess):
-    def __init__(self):
+    def __init__(self, n_trees=5, n_features=10, depth=10, n_bootsrap=800):
         super().__init__()
         self.forest = None
+        self.n_trees = n_trees
+        self.n_bootstrap = n_bootsrap
+        self.depth = depth
+        self.n_features = n_features
 
     def train(self, **kwargs):
-        self.forest = random_forest_algorithm(self.train_data, n_trees=5, n_bootstrap=800, n_features=10,
-                                              dt_max_depth=10)
+        self.forest = random_forest_algorithm(self.train_data,
+                                              n_trees=self.n_trees,
+                                              n_bootstrap=self.n_bootstrap,
+                                              n_features=self.n_features,
+                                              dt_max_depth=self.depth)
 
     def predict(self, test=None, **kwargs):
         try:
