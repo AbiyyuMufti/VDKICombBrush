@@ -31,7 +31,7 @@ class FeatureExtraction:
 		self.list_of_features = []
 		self.data_frame = None
 
-	def preprocess(self, image, show=False):
+	def preprocess(self, image, show=False, live=False):
 		"""
 		Preprocessing to extract the features of images
 		:param image: the image object -> opencv mat
@@ -81,7 +81,11 @@ class FeatureExtraction:
 			'solidity': c.approximation_area / c.hull_area
 		}
 		if show:
-			plt.imshow(image_to_show)
+			if live:
+				cv2.imshow("frame", image_to_show)
+			else:
+				plt.imshow(image_to_show)
+
 		self.list_of_features.append(features_extracted)
 		return image
 

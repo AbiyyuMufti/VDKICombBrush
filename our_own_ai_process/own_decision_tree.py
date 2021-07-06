@@ -86,7 +86,7 @@ def decision_tree_algorithm(df, counter=0, max_depth=10, min_samples=2):
         # (sub) tree making based on best feature and best split value to split
         # question asks if a data with certain feature and value is <= best split value
         feature_name = COLUMN_HEADERS[split_column]
-        question = "{} <= {}".format(feature_name, split_value)
+        question = "{} <= {}".format(feature_name, round(split_value, 2))
         sub_tree = {question: []}
 
         # answer is yes or no
@@ -126,7 +126,7 @@ class OurDecisionTree(AiProcess):
             print("Please train your tree first!", e)
 
     def plot_tree(self):
-        pprint.pprint(self.tree)
+        pprint.pprint(self.tree, width=50)
 
 
 if __name__ == '__main__':

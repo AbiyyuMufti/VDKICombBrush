@@ -98,7 +98,7 @@ class OurCNN(AiProcess):
             plt.ylabel("Loss/Accuracy")
             plt.legend()
             plt.show()
-        except AttributeError as at:
+        except AttributeError as e:
             print("please train your data first!", e)
 
     def predict(self, test=None, *args, **kwargs):
