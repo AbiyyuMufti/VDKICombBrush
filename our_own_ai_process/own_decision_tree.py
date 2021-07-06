@@ -1,5 +1,6 @@
-from ai_process import AiProcess
-from utility import check_purity, classify_data, split_data, determine_best_split, classify_example
+from our_own_ai_process.ai_process import AiProcess
+from our_own_ai_process.utility import check_purity, classify_data, \
+    split_data, determine_best_split, classify_example
 import pprint
 import pandas as pd
 import numpy as np
@@ -98,7 +99,7 @@ class OurDecisionTree(AiProcess):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv(r"D:\VDKICombBrush\800ImagesFeatures.csv")
+    df = pd.read_csv(r"D:\VDKICombBrush\ImagesFeatures.csv")
     ODT = OurDecisionTree()
     ODT.fit(df, 0.1)
     ODT.train()

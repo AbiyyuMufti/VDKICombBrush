@@ -10,15 +10,18 @@ import matplotlib.pyplot as plt
 
 class ImageResizer:
 	def __init__(self, width, height, inter=cv2.INTER_AREA):
-		# store the target image width, height, and interpolation
-		# method used when resizing
+		"""
+		store the target image width, height, and interpolation method used when resizing
+		:param width: target width
+		:param height: target height
+		:param inter: type of interpolation
+		"""
 		self.width = width
 		self.height = height
 		self.inter = inter
 
 	def preprocess(self, image, **kwargs):
-		# resize the image to a fixed size, ignoring the aspect
-		# ratio
+		# resize the image to a fixed size, ignoring the aspect ratio
 		return cv2.resize(image, (self.width, self.height), interpolation=self.inter)
 
 
@@ -29,25 +32,31 @@ class FeatureExtraction:
 		self.data_frame = None
 
 	def preprocess(self, image, show=False):
+		"""
+		Preprocessing to extract the features of images
+		:param image: the image object -> opencv mat
+		:param show: parameter if you want to show the detections frame image
+		:return image
+		"""
+		# make grayscale image
 		img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 		mean_of_gray_image = np.mean(img_gray)
-
+		# TODO: Later improvement - Thresholding value detected automatically from histogram!
 		if mean_of_gray_image < 180:
-			# Image is dark
-			# print("dark image")
 			contour_recognition_threshold = 120
 		else:
-			# print("bright image")
-			# Image is bright
 			contour_recognition_threshold = 200
+		# thresholding image to binary image
 		img_thresh = thresholding_image(img_gray, contour_recognition_threshold)
 		image_to_show = image.copy() if show else None
+		# Starting Features Extractor Object
 		a = CornersDetection(img_gray, image_to_show)
 		b = CornerHarrisDetection(img_gray, image_to_show)
 		c = ContoursDetection(img_thresh, image_to_show)
 		features_extraction = [a, b, c]
 		for F in features_extraction:
 			F.preprocess()
+		# Collecting Features in dictionary
 		features_extracted = {
 			'n_corner': a.number_of_corners,
 			'n_h_corner': b.number_of_corners,
@@ -74,8 +83,15 @@ class FeatureExtraction:
 		if show:
 			plt.imshow(image_to_show)
 		self.list_of_features.append(features_extracted)
+		return image
 
 	def extract_to_table(self, files, labels, fmt="a"):
+		"""
+		Extracting the list of features dictionary to CSV files
+		:param files: the target files
+		:param labels: the label of the images
+		:param fmt: format of the file
+		"""
 		le = LabelEncoder()
 		labels = le.fit_transform(labels)
 		for val in self.list_of_features:
@@ -88,6 +104,11 @@ class FeatureExtraction:
 				dict_writer.writerow(dat)
 
 	def extract_to_panda(self, labels):
+		"""
+		Creating Panda Dataframe
+		:param labels: the label of the images
+		:return: Panda Data Frame
+		"""
 		le = LabelEncoder()
 		labels = le.fit_transform(labels)
 		for val in self.list_of_features:
