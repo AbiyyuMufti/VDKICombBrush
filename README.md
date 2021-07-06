@@ -8,7 +8,7 @@ https://github.com/AbiyyuMufti/VDKICombBrush
 - ### Davin Farrell Lukito -75420 - luda1013@h-ka.de
 
 ## Wichtige Ordner-Inhalt bzw. Dateien:
-- #### resources: Bilder für Bürste und Kämme
+- #### resources: Bilder für Bürste und Kämme (Beim Abgabe der Projekt auf Ilias ist dieser Ordner nicht mit hochgeladen. Sie war früher schon separat hochgeladen)
 - #### preprocessing: Package um die rohe Bilder zu bearbeiten (z.B. Änderung der Bildgröße), die Merkmale zu extrahieren und zu einer Tabel oder csv-Datei zu speichern
       - feature_extraction.py = Funktionen zum Extrahieren von Merkmalen mittels opencv und numpy z.B. *Corner Detection with Haris* oder *Contour Detection*
       - image_preprocessing.py = Aufrufen Funktionen aus feature_extraction.py, Benennen alle Merkmalem und Speichern in Form einer Tabelle oder csv-Datei
