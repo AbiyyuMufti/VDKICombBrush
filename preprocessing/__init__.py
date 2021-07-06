@@ -1,3 +1,3 @@
 from .simpledatasetloader import SimpleDatasetLoader
 from .image_preprocessing import ImageResizer, FeatureExtraction
-from .imagetoarraypreprocessor import ImageToArrayPreprocessor
+# from .image_to_array import ImageToArrayPreprocessor

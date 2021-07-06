@@ -1,8 +1,7 @@
 import abc
 import pandas as pd
-import utility
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
-
+from our_own_ai_process import utility
 
 class AiProcess(abc.ABC):
     """ Abstract class for each AI Methods von our own implementation """

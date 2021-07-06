@@ -1,7 +1,8 @@
 from scipy.spatial.distance import minkowski
 from sklearn.preprocessing import StandardScaler
-from ai_process import AiProcess
+from our_own_ai_process.ai_process import AiProcess
 from collections import Counter
+import pandas as pd
 
 
 class OurKNearestNeighbour(AiProcess):
@@ -51,8 +52,7 @@ class OurKNearestNeighbour(AiProcess):
 
 if __name__ == '__main__':
     # Example of using this class !
-    import pandas as pd
-    my_data = pd.read_csv(r"D:\VDKICombBrush\800ImagesFeatures.csv")
+    my_data = pd.read_csv(r"D:\VDKICombBrush\ImagesFeatures.csv")
     fiveNearestNeighbour = OurKNearestNeighbour(5, "euclidean")
     fiveNearestNeighbour.fit(my_data, 0.10)
     fiveNearestNeighbour.predict()

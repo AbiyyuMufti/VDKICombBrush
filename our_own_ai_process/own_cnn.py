@@ -1,4 +1,4 @@
-from ai_process import AiProcess
+from our_own_ai_process.ai_process import AiProcess
 from imutils import paths
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
@@ -11,7 +11,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras import backend as K
 from tensorflow.keras.optimizers import SGD
 from preprocessing import SimpleDatasetLoader, ImageResizer
-from preprocessing import ImageToArrayPreprocessor
+from preprocessing.image_to_array import ImageToArrayPreprocessor
 import numpy as np
 
 
@@ -57,18 +57,20 @@ class OurCNN(AiProcess):
         # Print the model summary after successfully instantiate it
         print(self.model.summary())
 
+        # Start values
         self.H = None
         self.batch_size = batch_size
         self.epochs = epochs
         self.test_labels_2dim = None
 
-    def fit(self, data, test_size):
+    def fit(self, data_and_label: tuple, test_size):
         """
         Fit function direct from image data
-        :param data: image data in specified dimension
+        :param data_and_label: image data in specified dimension and the labels
         :param test_size: the factor split between test and training data set
         """
-        input_data = data.astype("float") / 255.0
+        input_data, labels = data_and_label
+        input_data = input_data.astype("float") / 255.0
         (self.train_value, self.test_value, self.train_labels, self.test_labels_2dim) = train_test_split(input_data, labels, test_size=test_size, random_state=42)
         le = LabelBinarizer()
 
@@ -109,14 +111,13 @@ class OurCNN(AiProcess):
 
 
 if __name__ == '__main__':
-    # my_data = pd.read_csv(r"D:\VDKICombBrush\800ImagesFeatures.csv")
     imagePaths = list(paths.list_images(r"D:/VDKICombBrush/resources/"))
     sp = ImageResizer(32, 32)
     iap = ImageToArrayPreprocessor()
     sdl = SimpleDatasetLoader(preprocessors=[sp, iap])
-    (data, labels) = sdl.load(imagePaths, verbose=500)
+    (data, label) = sdl.load(imagePaths, verbose=500)
     cnn = OurCNN(32, 32, 3, 0.01, 100, 500)
-    cnn.fit(data, 0.25)
+    cnn.fit((data, label), 0.25)
     cnn.train()
     cnn.plot_history()
     cnn.predict()
