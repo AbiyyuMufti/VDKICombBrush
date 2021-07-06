@@ -38,6 +38,7 @@ https://github.com/AbiyyuMufti/VDKICombBrush
 ## Einige Dateien zu checken oder anzuschauen:
 - DataSetCreator.pdf: Durchführung aller Bilder in /resources/
 - Features and Scores.pdf: Zusammenfassung der extrahierten Merkmale und Ergebnis-vergleich zwischen Decision Tree, Random Forest, KNN und CNN
+- ImplementationAI.pdf: Durchführung aller 4 AI-Verfahren
 - Scores.xlsx: Liste der extrahierten Merkmale, Ergebnisbeispiel beim Extrahieren, Vergleich der Ergebnisse zwischen Decision Tree, Random Forest, KNN und CNN
 
   
