@@ -26,6 +26,8 @@
 ## Ausführung der Verfahren:
 - Öffnen der ipynb-Datei: ImplementationAI.ipynb in Jupyter-Notebook
 - Lassen Sie das Script durchführen
+- Anmerkung für Decision Tree: der Baum bzw. der Afbau ist nicht gut angezeigt in ipynb; auch trotz mit dem Befehl pprint.pprint(ODT.tree) oder ODT.plot_tree()
+                              der Baum ist viel besser angezeigt, in dem man die Datei: own_decision_tree.py ausführt.
     
 ## Einige Dateien zu checken oder anzuschauen:
 - DataSetCreator.pdf: Durchführung aller Bilder in /resources/
